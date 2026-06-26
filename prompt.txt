@@ -1,0 +1,9 @@
+Complete the implementation in sources/lmmu.sv.
+
+The module performs address translation for AXI read and write address channels.
+
+Requirements:
+- Use translation table entries to translate virtual page numbers into physical page numbers.
+- Preserve AXI handshake behavior.
+- Invalid translations must generate the appropriate error indication.
+- Do not modify module interfaces.
