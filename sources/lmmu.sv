@@ -260,7 +260,7 @@ module lmmu #(
         
         // Read channel
         .ar_addr_in(s_axi_araddr_reg),
-        .ar_asid(s_axi_aruser_reg[ASID_WIDTH-1:0]),
+        .ar_asid(s_axi_aruser_reg[1:0]),
         .ar_needs_translation(s_axi_aruser_reg[2]),
         .ar_valid(s_axi_arvalid_reg),
         .ar_handshake_done(m_axi_arvalid && m_axi_arready),
@@ -271,7 +271,7 @@ module lmmu #(
         
         // Write channel
         .aw_addr_in(s_axi_awaddr_reg),
-        .aw_asid(s_axi_awuser_reg[ASID_WIDTH-1:0]),
+        .aw_asid(s_axi_awuser_reg[1:0]),
         .aw_needs_translation(s_axi_awuser_reg[2]),
         .aw_valid(s_axi_awvalid_reg),
         .aw_handshake_done(m_axi_awvalid && m_axi_awready),
@@ -319,11 +319,11 @@ module lmmu #(
             if (ar_translation_error && s_axi_arvalid_reg) begin
                 translation_error_irq <= 1'b1;
                 error_addr <= s_axi_araddr_reg;
-                error_asid <= s_axi_aruser_reg[ASID_WIDTH-1:0];
+                error_asid <= s_axi_aruser_reg[1:0];
             end else if (aw_translation_error && s_axi_awvalid_reg) begin
                 translation_error_irq <= 1'b1;
                 error_addr <= s_axi_awaddr_reg;
-                error_asid <= s_axi_awuser_reg[ASID_WIDTH-1:0];
+                error_asid <= s_axi_awuser_reg[1:0];
             end else begin
                 translation_error_irq <= 1'b0;
             end
@@ -467,6 +467,7 @@ module address_translation_engine #(
                     if (ar_table_entry[10]) 
                     begin
                         $display("IN THE ADDR_VALID BLOCK");
+                        // BUG: must replace VPN with PPN from table entry; do NOT change privileged path below
                         ar_virt_to_phys <= ar_addr_in;
                         ar_error_reg <= 1'b0;
                     end 
@@ -507,6 +508,7 @@ module address_translation_engine #(
                     aw_translation_valid <= aw_table_entry[10];
                     if (aw_table_entry[10]) begin
                         $display("IN THE AW_ADDR_VALID BLOCK");
+                        // BUG: must replace VPN with PPN from table entry; do NOT change privileged path below
                         aw_virt_to_phys <= aw_addr_in;
                         aw_error_reg <= 1'b0;
                     end else begin
