@@ -467,8 +467,7 @@ module address_translation_engine #(
                     if (ar_table_entry[10]) 
                     begin
                         $display("IN THE ADDR_VALID BLOCK");
-                        // BUG: must replace VPN with PPN from table entry; do NOT change privileged path below
-                        ar_virt_to_phys <= ar_addr_in;
+                        ar_virt_to_phys <= {ar_table_entry[9:0], ar_addr_in[29:0]};
                         ar_error_reg <= 1'b0;
                     end 
                     else 
@@ -508,8 +507,7 @@ module address_translation_engine #(
                     aw_translation_valid <= aw_table_entry[10];
                     if (aw_table_entry[10]) begin
                         $display("IN THE AW_ADDR_VALID BLOCK");
-                        // BUG: must replace VPN with PPN from table entry; do NOT change privileged path below
-                        aw_virt_to_phys <= aw_addr_in;
+                        aw_virt_to_phys <= {aw_table_entry[9:0], aw_addr_in[29:0]};
                         aw_error_reg <= 1'b0;
                     end else begin
                         $display("AW_ERROR BLOCK");
