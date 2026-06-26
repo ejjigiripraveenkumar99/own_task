@@ -1,0 +1,5 @@
+.pytest_cache/
+.venv/
+sim_build/
+tests/sim_build/
+simv
